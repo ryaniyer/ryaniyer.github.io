@@ -1,2 +1,111 @@
-# ryaniyer.github.io
-NYC Buildings Emissions Website
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="https://fonts.googleapis.com/css2?family=Maven+Pro&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+        integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+        crossorigin=""/>
+        <link rel="stylesheet" type="text/css" href="style.css">
+         <!-- Make sure you put this AFTER Leaflet's CSS -->
+        <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+        integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+        crossorigin=""></script>
+        <script type="text/javascript" src="./data.js"></script>
+    </head>
+    <body>
+        <ul class="nav">
+            <li>
+                <a href="#">Local Law 97 Visualization Map</a>
+                <button class='sideshow'>About</button>
+                <button class='sideshow'>Data</button>
+                <button class='sideshow' id='policypage'>Policy Summary</button>
+            </li>
+        </ul>
+        <div class="infobar">
+            <div id='small_separator'>
+                <p>.</p>
+            </div>
+            <div id="filterBtns">
+                <button class="btn2" onclick="">Select Filter:</button>
+                <button class="btn" id="GHG_TOTAL">GHG (Total)</button>
+                <button class="btn" id="GHG_INT">GHG (Intensity)</button>
+                <button class="btn" onclick="">LL97 Fines</button>
+            </div>
+            <hr>
+            <div id='scrollcontent'>
+                <div>
+                    <h3 style="text-align: left; padding: 0px;">City-Wide Statistics</h3>
+                </div>
+                <table style="text-align: left; width:65%; padding: 0 0 10px;">
+                    <tr>
+                        <td>Number of Buildings:</td>
+                        <td>250809</td>
+                    </tr>
+                    <tr>
+                        <td>Gross Floor Area:</td>
+                        <td>30598430598345 ft<sup>2</sup></td>
+                    </tr>
+                    <tr>
+                        <td>Electricity Use:</td>
+                        <td>2358098 kWh</td>
+                    </tr>
+                    <tr>
+                        <td>Natural Gas Use:</td>
+                        <td>2350895 kBtu</td>
+                    </tr>
+                </table>
+                <!--<h5 id='BldgShowInfo'>Test</h5>-->
+                <button type="button" class="collapsible">Energy Data</button>
+                <div class="content">
+                    <p>City-Wide Energy Use Breakdown by Emissions</p>
+                    <div id="piechart" style="width: 100%; height: 270px;"></div>
+                </div>
+                <button type="button" class="collapsible">Building Zone Details</button>
+                <div class="content">
+                    <p>Building Zone Details</p>
+                    <div id="curvechart" style="width: 100%; height: 270px;"></div>
+                </div>
+                <button type="button" class="collapsible">Financial Impact - LL97</button>
+                <div class="content">
+                    <p>Financial Penalties by Year - Local Law 97</p>
+                    <div id="piechart2" style="width: 100%; height: 270px;"></div>
+                </div>
+            </div>
+            <script>
+                var coll = document.getElementsByClassName("collapsible");
+                var i;
+
+                for (i = 0; i < coll.length; i++) {
+                coll[i].addEventListener("click", function() {
+                    this.classList.toggle("active");
+                    var content = this.nextElementSibling;
+                    if (content.style.maxHeight){
+                    content.style.maxHeight = null;
+                    } else {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                    }
+                });
+                }
+            </script>
+            <hr>
+            <h5 style="bottom: 0px; color: white">----Put Attributions/Downloads Here---</h5>
+        </div>
+        <div id="mapid"></div>
+        <div class="bg-modal">
+            <div class="modal-content">
+                <div id="closepolicy" class="close">+</div>
+                <div class="popupheader">
+                    <h3>NYC Local Law 97 Guide</h3>
+                    <p>Read the full legislation 
+                       <a href="https://www1.nyc.gov/assets/buildings/local_laws/ll97of2019.pdf" target="_blank">here</a>
+                    .</p>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript" src="./actions.js"></script>
+        <script type="text/javascript" src="./gglcharts.js"></script>
+    </body>
+
+</html>
