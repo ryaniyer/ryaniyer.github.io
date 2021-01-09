@@ -1,16 +1,8 @@
 const map = L
  .map('mapid')
  .setView([40.754797, -73.985069], 13);   // center position + zoom
- //.setView([40.730610, -73.975242], 14);   // center position + zoom
- // Add background to map (many diff options: https://leaflet-extras.github.io/leaflet-providers/preview/)
- 
- /*
- L.tileLayer(
-    'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-    subdomains: 'abcd', maxZoom: 19, minZoom: 11
-    }).addTo(map);
-*/
+
+
 //add a separate label layer above geojsons:
 map.createPane('labels');
 map.getPane('labels').style.zIndex = 650;
@@ -24,22 +16,20 @@ var positronLabels = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_l
         pane: 'labels',subdomains: 'abcd', maxZoom: 19, minZoom: 11
 }).addTo(map);
 
-
+//Create color gradients by plotting distribution and focus range on middle 50% 
 //blue-green color scheme for total GHG intensity:
 function ghgintColor(d) {
     return d > 12 ? '#0c2c84' : d > 10  ? '#225ea8' :
         d > 7.5  ? '#1d91c0' : d > 5  ? '#41b6c4' :
         d > 3.5   ? '#7fcdbb' : d > 2   ? '#c7e9b4' :
         d > 1   ? '#edf8b1' : '#ffffd9';
- }
-//red hot color scheme for GHG total:
+ } //red hot color scheme for GHG total:
 function ghgColor(d) {
     return d > 10000 ? '#b10026' : d > 7500  ? '#e31a1c' :
         d > 5000  ? '#fc4e2a' : d > 2500  ? '#fd8d3c' :
         d > 1000   ? '#feb24c' : d > 500  ? '#fed976' :
         d > 100   ? '#ffeda0' : '#ffffcc';
-}
-//red gradient with green for no fine:
+} //red gradient with green for no fine:
 function fineColor(d) {
     return d > 10000000 ? '#13306dff' : d > 5000000  ? '#403891ff' :
         d > 1000000  ? '#6b4596ff' : d > 500000  ? '#a65c85ff' :
@@ -229,16 +219,6 @@ legend.onAdd = function (map) {
 };
 legend.addTo(map);
 
-//click event for policy page
-document.getElementById('policypage').addEventListener('click',
-function() {
-    document.querySelector('.bg-modal').style.display = 'flex';
-});
-document.getElementById('closepolicy').addEventListener('click',
-function() {
-    document.querySelector('.bg-modal').style.display = 'none';
-});
-
 document.getElementById('closebuildingcontent').addEventListener('click',
 function() {
     document.getElementById('buildingcontent').style.display = 'none';
@@ -319,6 +299,7 @@ document.getElementById('FINES').addEventListener('mouseleave', function(){
 });
 
 //collapsible animations
+/*
 var coll = document.getElementsByClassName("collapsible");
 var col_iter;
 for (col_iter = 0; col_iter < coll.length; col_iter++) {
@@ -326,12 +307,13 @@ for (col_iter = 0; col_iter < coll.length; col_iter++) {
         this.classList.toggle("active");
         var content = this.nextElementSibling;
         if (content.style.maxHeight){
-        content.style.maxHeight = null;
+            content.style.maxHeight = null;
         } else {
-        content.style.maxHeight = content.scrollHeight + "px";
+            content.style.maxHeight = content.scrollHeight + "px";
         }
     });
-}
+}*/
+//custom collapsibles:
 
 //adjust the map size to window size
 window.addEventListener('resize', function(){
@@ -339,9 +321,66 @@ window.addEventListener('resize', function(){
 });
 this.document.getElementById('mapid').style.width = window.innerWidth - 500 + 'px';
 
+function adjust_content(e){
+    var content = e.nextElementSibling;
+    if(content.style.maxHeight)
+        content.style.maxHeight = null;
+    else
+        content.style.maxHeight= content.scrollHeight + "px";
+}
 document.getElementById('cityEnergyBtn').addEventListener('click', function(){
     drawCityEnergyBarChart();
+    adjust_content(this);
 });
 document.getElementById('cityPropBtn').addEventListener('click', function(){
     drawCityPropTypeChart();
+    adjust_content(this);
+});
+bldg_btns = ['info_btn','energy_btn','ll97_btn'];
+for(var i=0; i<3; i++){
+    document.getElementById(bldg_btns[i]).addEventListener('click', function(){
+        adjust_content(this);
+    });
+}
+
+//close button click event for welcome popup
+document.getElementById('closewelcome').addEventListener('click',
+function() {
+    document.getElementById('welcomepop').style.display = 'none';
+});
+//allow for html to make links to data page from welcome
+function clickdata(){
+    document.getElementById('welcomepop').style.display = 'none';
+    document.getElementById('datapop').style.display = 'flex';
+}
+//embed html function when clicking page title
+function clickwelcome(){
+    document.getElementById('welcomepop').style.display = 'flex';
+}
+//click event for policy page
+document.getElementById('policypage').addEventListener('click',
+function() {
+    document.getElementById('policypop').style.display = 'flex';
+});
+document.getElementById('closepolicy').addEventListener('click',
+function() {
+    document.getElementById('policypop').style.display = 'none';
+});
+//click event for data page
+document.getElementById('datapage').addEventListener('click',
+function() {
+    document.getElementById('datapop').style.display = 'flex';
+});
+document.getElementById('closedata').addEventListener('click',
+function() {
+    document.getElementById('datapop').style.display = 'none';
+});
+//click event for about page
+document.getElementById('aboutpage').addEventListener('click',
+function() {
+    document.getElementById('aboutpop').style.display = 'flex';
+});
+document.getElementById('closeabout').addEventListener('click',
+function() {
+    document.getElementById('aboutpop').style.display = 'none';
 });

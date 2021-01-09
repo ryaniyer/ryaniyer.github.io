@@ -17,9 +17,10 @@
     <body>
         <ul class="nav">
             <li>
-                <a href="#top">NYC Local Law 97 Visualization Map</a>
-                <button class='sideshow'>About</button>
-                <button class='sideshow'>Data</button>
+                <a href='#emissionsmap' onclick="clickwelcome();" style="cursor: pointer; cursor: hand;">
+                    NYC Building Emissions Map for Local Law 97</a>
+                <button class='sideshow' id='aboutpage'>About</button>
+                <button class='sideshow' id='datapage'>Data</button>
                 <button class='sideshow' id='policypage'>Policy Summary</button>
             </li>
         </ul>
@@ -28,8 +29,8 @@
                 <div id="filterBtns">
                     <button class="btn2" onclick="">Select Filter:</button>
                     <button class="btn" id="FINES">LL97 Fines</button>
-                    <button class="btn" id="GHG_INT">GHG (Intensity)</button>
-                    <button class="btn" id="GHG_TOTAL">GHG (Total)</button>
+                    <button class="btn" id="GHG_INT">GHG/sqft</button>
+                    <button class="btn" id="GHG_TOTAL">Total GHG</button>
                 </div>
                 <hr>
                 <div id='scrollcontent'>
@@ -42,12 +43,12 @@
                             <td>23,324</td>
                         </tr>
                         <tr>
-                                <td>Total Fine Risk 2024-2029:</td>
-                                <td>$2,758,000,000</td>
+                                <td>Average Fine Risk 2024-2029:</td>
+                                <td>$21,346</td>
                         </tr>
                         <tr>
-                                <td>Total Fine Risk 2030-2034:</td>
-                                <td>$10,908,000,000</td>
+                                <td>Average Fine Risk 2030-2034:</td>
+                                <td>$68,543</td>
                         </tr>
                         <tr>
                             <td>Median GHG Intensity:</td>
@@ -93,9 +94,9 @@
                         </div>
                         <p id='BldgPrimType'></p>
                         <hr>
-                        <button type="button" class="collapsible">Building Information</button>
+                        <button id='info_btn' type="button" class="collapsible">Building Information</button>
                         <div id='bldgInfo' class="content" style='font-size:15px;;'></div>
-                        <button type="button" class="collapsible">Energy Use and Emissions Breakdown</button>
+                        <button id='energy_btn' type="button" class="collapsible">Energy Use and Emissions Breakdown</button>
                         <div class="content" style='line-height:95%;'>
                             <p>Annual Building Energy Use by Fuel Type (2018)</p>
                             <div id="bldgEnergyBarChart" style="width: 100%; height: 240px;"></div>
@@ -106,7 +107,7 @@
                                 may not accurately reflect the true emissions impact of each building.
                             </p>
                         </div>
-                        <button type="button" class="collapsible">Financial Impact - LL97</button>
+                        <button id='ll97_btn' type="button" class="collapsible">Financial Impact - LL97</button>
                         <div class="content">
                             <div id='BldgShowInfo'></div>
                             <div id="fineScheduleChart" style="width: 100%; height: 270px;"></div>
@@ -119,7 +120,7 @@
             </div>
             <div id="mapid"></div>
         </div>
-        <div class="bg-modal">
+        <div id='policypop' class="bg-modal">
             <div class="modal-content">
                 <div id="closepolicy" class="close">+</div>
                 <div class="popupheader">
@@ -127,6 +128,89 @@
                     <p>Read the full legislation 
                        <a href="https://www1.nyc.gov/assets/buildings/local_laws/ll97of2019.pdf" target="_blank">here</a>
                     .</p>
+                </div>
+            </div>
+        </div>
+        <div id='datapop' class="bg-modal">
+                <div class="data-content">
+                    <div id="closedata" class="close">+</div>
+                    <div class="popupheader">
+                        <h3>About the Data</h3>
+                        <p>Fuel-Use Data: 
+                        <a target="_blank" href='https://data.cityofnewyork.us/Environment/Energy-and-Water-Data-Disclosure-for-Local-Law-84-/n2mv-q2ia'>
+                            Energy and Water Data Disclosure for Local Law 84 (2017)</a></p>
+                            <ul class='info-bullet'>
+                                <li>Buildings less than 25,000sqft and city-owned buildings were filtered out</li>
+                                <li>Buildings with entry-errors (faulty BBLs, inconsistent fuel data) were omitted</li>
+                                <li>Power plants, worship facilities, and industrial/manufacturing plants were omitted</li>
+                            </ul>
+                        <p>Building Polygon Data: 
+                        <a target="_blank" href='https://www1.nyc.gov/site/planning/data-maps/open-data/bytes-archive.page?sorts[year]=0&queries[search]=PLUTO'>
+                            PLUTO 18v2.1</a></p>
+                            <ul class='info-bullet'>
+                                <li>Building gross floor areas were calculated using LL84 dataset (self-reported by each property owner). 
+                                    PLUTO floor area data was ommitted due to general inconsistencies</li>
+                            </ul>
+                        <p>Occupancy Zone Data:
+                        <a target='_blank' href='https://www1.nyc.gov/assets/buildings/apps/pdf_viewer/viewer.html?file=2014CC_BC_Chapter_3_Use_and_Occupancy_Classification.pdf&section=conscode_2014'>
+                        NYC Building Code Chapter 3</a></p>
+                        <ul class='info-bullet'>
+                            <li>No data is available for occupancy groups, a key factor for determining
+                                building emissions limits, so the LL84 Property Use Type data was associated
+                                with the NYC Building Code's occupancy zones.</li>
+                            <li>Occupancy groups were imputed manually (ex: Multifamily Housing
+                                mapped to the R-2 "Permanent Residence Use Group"). This may have lead to
+                                inaccuracies in penalty calculations, which should be assessed on a case-by-case basis
+                                by each property owner.</li>
+                            <li>Buildings with a proprty use type of "Other" are assigned to occupancy group B (Business)
+                                for simplicity.
+                                This group represents 0.95% of all buildings and 1.05% of total floor area.</li>
+                        </ul>
+                    </div>
+                </div>
+        </div>
+        <div id='aboutpop' class="bg-modal">
+            <div class="about-content">
+                <div id="closeabout" class="close">+</div>
+                <div class="popupheader">
+                    <h3>About</h3>
+                    <p>This website was created by Ryan Iyer as an additional
+                        tool to assess NYC's climate policy.
+                    <br>
+                    Best ways to contact me:</p>
+                    <ul class='info-bullet'>
+                            <li>Email: ri2242@columbia.edu</li>
+                            <li><a href='https://github.com/ryaniyer'>GitHub</a></li>
+                            <li><a href='https://www.linkedin.com/in/ryan-iyer-850346136/'>LinkedIn</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div id='welcomepop'>
+            <div class="welcome-content">
+                <div id="closewelcome" class="close">+</div>
+                <div class="popupheader">
+                    <h3>Welcome to the NYC Buildings Emissions Visualization Map</h3>
+                    <p>This map aims to provide an interactive visual summary of
+                        NYC's 
+                        <a href="https://www1.nyc.gov/assets/buildings/local_laws/ll97of2019.pdf" target="_blank">
+                        Local Law 97</a>
+                        which starting in 2024 will enforce fines on buildings that exceed pre-established GHG limits.
+                    </p>
+                    <p>This map also aims to act as a policy tool.
+                        Local Law 97 falls short by failing to incentivize electrification.
+                        In the future, this map will be updated to allow users to create custom electricity emissions limits,
+                        to show how reducing penalties for electric use can incentivize fuel-switching.
+                    </p>
+                    <p>All information is strictly informational and utilizes
+                        <a onclick='clickdata();' style="color:blue; text-decoration: underline;
+                            cursor: pointer; cursor: hand;">energy-use datasets</a>
+                        that are publically published by the city.
+                        There is no guarantee of accuracy. Each building owner should consult an energy consultant or engineer to assess
+                        their true expected penalty and ways to reduce emissions.
+                    </p>
+                    <p>For best performance, view this website in Google Chrome or Safari browser (not mobile-friendly).</p>
+                    
                 </div>
             </div>
         </div>
