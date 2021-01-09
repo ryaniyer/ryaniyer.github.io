@@ -323,10 +323,16 @@ this.document.getElementById('mapid').style.width = window.innerWidth - 500 + 'p
 
 function adjust_content(e){
     var content = e.nextElementSibling;
-    if(content.style.maxHeight)
+    if(content.style.maxHeight){
         content.style.maxHeight = null;
-    else
+        this.document.getElementById('mapid').style.width = window.innerWidth - 501 + 'px';
+        this.document.getElementById('mapid').style.width = window.innerWidth - 500 + 'px';
+    }
+    else{
         content.style.maxHeight= content.scrollHeight + "px";
+        this.document.getElementById('mapid').style.width = window.innerWidth - 501 + 'px';
+        this.document.getElementById('mapid').style.width = window.innerWidth - 500 + 'px';
+    }
 }
 document.getElementById('cityEnergyBtn').addEventListener('click', function(){
     drawCityEnergyBarChart();
@@ -357,6 +363,7 @@ function clickdata(){
 function clickwelcome(){
     document.getElementById('welcomepop').style.display = 'flex';
 }
+/*
 //click event for policy page
 document.getElementById('policypage').addEventListener('click',
 function() {
@@ -365,7 +372,7 @@ function() {
 document.getElementById('closepolicy').addEventListener('click',
 function() {
     document.getElementById('policypop').style.display = 'none';
-});
+});*/
 //click event for data page
 document.getElementById('datapage').addEventListener('click',
 function() {
